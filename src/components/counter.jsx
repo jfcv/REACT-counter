@@ -13,22 +13,69 @@ class Counter extends React.Component {
   }
   */
 
+  /**
+   * this method is called after a component is updated
+   * which means we have new state or new props
+   * so we can compare them with the old state or
+   * old props
+   * and if there's a CHANGE we can a make
+   * an AJAX request to get new data from the server
+   */
+  componentDidUpdate(prevProps, prevState) {
+    console.log("prevProps", prevProps);
+    console.log("prevState", prevState);
+
+    if (prevProps.counter.value !== this.props.counter.value) {
+      //AJAX call to get new data from the server
+    }
+  }
+
+  /**
+   * this method is called just before the
+   * component is removed from the DOM
+   */
+  componentWillUnmount() {
+    console.log("Counter - Unmount");
+    /**
+     * generally this is where we can clean up
+     * the application (timers, listeners)
+     * otherwise we'll end up with memory leaks
+     */
+  }
+
   render() {
+    console.log("Counter - Rendered");
+
+    const { onIncrement, onDecrement, onDelete, counter } = this.props;
     return (
-      <div>
-        <span className={this.getBadgeClasses()}>{this.formatCount()}</span>
-        <button
-          onClick={() => this.props.onIncrement(this.props.counter)}
-          className="btn btn-info btn-sm"
-        >
-          Increment
-        </button>
-        <button
-          onClick={() => this.props.onDelete(this.props.counter.id)}
-          className="btn btn-danger btn-sm m-2"
-        >
-          Delete
-        </button>
+      <div className="row">
+        <div className="col-1">
+          <span className={this.getBadgeClasses()}>{this.formatCount()}</span>
+        </div>
+
+        <div className="col">
+          <button
+            onClick={() => onIncrement(counter)}
+            className="btn btn-info btn-sm"
+          >
+            +
+          </button>
+
+          <button
+            onClick={() => onDecrement(counter)}
+            className="btn btn-info btn-sm m-2"
+            disabled={this.formatDecrementButton()}
+          >
+            -
+          </button>
+
+          <button
+            onClick={() => onDelete(counter.id)}
+            className="btn btn-danger btn-sm"
+          >
+            x
+          </button>
+        </div>
       </div>
     );
   }
@@ -45,6 +92,11 @@ class Counter extends React.Component {
   formatCount() {
     const { value } = this.props.counter;
     return value === 0 ? "Zero" : value;
+  }
+
+  formatDecrementButton() {
+    const { value } = this.props.counter;
+    return value === 0;
   }
 
   /**
